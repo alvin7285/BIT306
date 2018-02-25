@@ -3,71 +3,76 @@ import ReactDOM from 'react-dom';
 import { createStore } from 'redux';
 
 var defaultState = {
-  todo: {
+  product: {
     items: []
   }
 };
 
 
-function addTodo(name, description) {
+function addProduct(name, description, price, category, quantity) {
  return {
-   type: 'ADD_TODO',
+   type: 'ADD_PRODUCT',
    name: name,
-   description:description,
+   description: description,
+   price: price,
+   category: category,
+   quantity: quantity,
    completed: false
  };
 }
 
-function completeTodo(index) {
+function completeProduct(index) {
   return {
-    type: 'COMPLETE_TODO',
+    type: 'COMPLETE_PRODUCT',
     index: index
   };
 }
 
-function deleteTodo(index) {
+function deleteProduct(index) {
   return {
-    type: 'DELETE_TODO',
+    type: 'DELETE_PRODUCT',
     index: index
   };
 }
 
-function clearTodo() {                                           //CLEAR ACTION THAT WILL BE SENT TO REDUCER
+function clearProduct() {                                           //CLEAR ACTION THAT WILL BE SENT TO REDUCER
  return {
-   type: 'CLEAR_TODO'
+   type: 'CLEAR_PRODUCT'
  };
 }
 
 
-function todoApp(state, action) {
+function productApp(state, action) {
   switch (action.type) {
-    case 'ADD_TODO':
+    case 'ADD_PRODUCT':
       var newState = Object.assign({}, state);
-      newState.todo.items.push({
+      newState.product.items.push({
         name: action.name,
         description: action.description,
+        price: action.price,
+        category: action.category,
+        quantity: action.quantity,
         completed: false
       });
-
       return newState;
 
-    case 'COMPLETE_TODO':
+    case 'COMPLETE_PRODUCT':
       var newState = Object.assign({}, state);
-      newState.todo.items[action.index].completed = true;
+      newState.product.items[action.index].completed = true;
       return newState;
 
-    case 'DELETE_TODO':
-      var items = [].concat(state.todo.items);
+    case 'DELETE_PRODUCT':
+      var items = [].concat(state.product.items);
       items.splice(action.index, 1);
       return Object.assign({}, state, {
-        todo: {
+        product: {
           items: items
         }
       });
 
-      case 'CLEAR_TODO':                                        //REDUCER THAT ACCEPTS THE CLEAR ACTION
+      case 'CLEAR_PRODUCT':                                        //REDUCER THAT ACCEPTS THE CLEAR ACTION
         return Object.assign({}, state,{
-          todo:{
+          product:{
             items:[]
           }
         });
@@ -77,41 +82,50 @@ function todoApp(state, action) {
   }
 };
 
-var store = createStore(todoApp, defaultState);
+var store = createStore(productApp, defaultState);
 
 class ClearButton extends React.Component{                      //INVOKE THE CLEAR METHOD AND RENDER THE CLEAR BUTTON
-  clearTodo(){
-    store.dispatch(clearTodo());
+  clearProduct(){
+    store.dispatch(clearProduct());
   }
 
   render(){
     return(
-      <button onClick={this.clearTodo.bind(this)}>CLEAR LIST</button>
+      <button onClick={this.clearProduct.bind(this)}>CLEAR LIST</button>
     );
   }
 }
 
-class AddTodoForm extends React.Component {
+class AddProductForm extends React.Component {
 
   constructor(props) { //class constructor to assign the initial this.state
     super(props);//call the base constructor with props
     this.state = {
       name: '',
-      description: ''
+      description: '',
+      price: '',
+      category: '',
+      quantity: ''
     };
-    this.onnameChanged=this.onnameChanged.bind(this);
+    this.onNameChanged=this.onNameChanged.bind(this);
     this.onDescriptionChanged=this.onDescriptionChanged.bind(this);
+    this.onPriceChanged=this.onPriceChanged.bind(this);
+    this.onCategoryChanged=this.onCategoryChanged.bind(this);
+    this.onQuantityChanged=this.onQuantityChanged.bind(this);
     this.onFormSubmit=this.onFormSubmit.bind(this);
   }
 
   onFormSubmit(e) {
     e.preventDefault();
-    store.dispatch(addTodo(this.state.name, this.state.description));
+    store.dispatch(addProduct(this.state.name, this.state.description, this.state.price, this.state.category, this.state.quantity));
     this.setState({ name: '' });
     this.setState({ description: '' });
+    this.setState({ price: ''});
+    this.setState({ category: ''});
+    this.setState({ quantity: ''});
   }
 
-  onnameChanged(e) {
+  onNameChanged(e) {
     this.setState({ name: e.target.value });
   }
 
@@ -119,29 +133,55 @@ class AddTodoForm extends React.Component {
     this.setState({ description: e.target.value });
   }
 
+  onPriceChanged(e) {
+    this.setState({ price: e.target.value });
+  }
+
+  onCategoryChanged(e) {
+    this.setState({ category: e.target.value });
+  }
+
+  onQuantityChanged(e) {
+    this.setState({ quantity: e.target.value });
+  }
+
   render() {
     return (
       <form onSubmit={this.onFormSubmit}>
-        <input type="text" placeholder="Name"
-               onChange={this.onnameChanged}
+        <input type="text" id ="textbox" placeholder="Name"
+               onChange={this.onNameChanged}
                value={this.state.name} />
 
-        <input type="text" placeholder="Description"
+        <input type="text" id ="textbox" placeholder="Description"
               onChange={this.onDescriptionChanged}
               value={this.state.description} />
+
+
+        <input type="text" id ="textbox" placeholder="Price"
+              onChange={this.onPriceChanged}
+              value={this.state.price} />
+
+        <input type="text" id ="textbox" placeholder="Category"
+              onChange={this.onCategoryChanged}
+              value={this.state.category} />
+
+        <input type="text" id ="textbox" placeholder="Quantity"
+              onChange={this.onQuantityChanged}
+              value={this.state.quantity} />
+
         <input type="submit" value="Add" />
       </form>
     );
   }
 }
 
-class TodoItem extends React.Component {
+class ProductItem extends React.Component {
   onDeleteClick() {
-    store.dispatch(deleteTodo(this.props.index));
+    store.dispatch(deleteProduct(this.props.index));
   }
 
   onCompletedClick() {
-    store.dispatch(completeTodo(this.props.index));
+    store.dispatch(completeProduct(this.props.index));
   }
 
   render() {
@@ -151,8 +191,11 @@ class TodoItem extends React.Component {
            style={{textDecoration: this.props.completed ? 'line-through' : 'none'}}>
          {this.props.name}
          {this.props.description}
-
+         {this.props.price}
+         {this.props.category}
+         {this.props.quantity}
         </a>
+
         <a href="#" onClick={this.onDeleteClick.bind(this)}
            style={{textDecoration: 'none'}}>
          [X]
@@ -163,7 +206,7 @@ class TodoItem extends React.Component {
   }
 }
 
-class TodoList extends React.Component {
+class ProductList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -175,7 +218,7 @@ class TodoList extends React.Component {
     store.subscribe(() => {
       var state = store.getState();
       this.setState({
-        items: state.todo.items
+        items: state.product.items
       });
     });
   }
@@ -184,11 +227,14 @@ class TodoList extends React.Component {
     var items = [];
 
     this.state.items.forEach((item, index) => {
-      items.push(<TodoItem
+      items.push(<ProductItem
         key={index}
         index={index}
         name={item.name}
         description={item.description}
+        price={item.price}
+        category={item.category}
+        quantity={item.quantity}
         completed={item.completed}
       />);
     });
@@ -209,9 +255,9 @@ class TodoList extends React.Component {
 
 ReactDOM.render(
   <div>
-    <h1>Todo</h1>
-    <AddTodoForm />
-    <TodoList />
+    <h1>Product</h1>
+    <AddProductForm />
+    <ProductList />
     <ClearButton />
   </div>,
   document.getElementById('app')
