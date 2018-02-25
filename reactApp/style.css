@@ -1,0 +1,14 @@
+.flex-container{
+  display:flex;
+  flex-wrap:wrap;
+  height: 50px;
+  background-color:deepskyblue;
+  align-content: flex-end;
+  justify-content: flex-end;
+}
+
+.flex-item{
+  padding:1em;
+  color: white;
+  display: block;
+}
