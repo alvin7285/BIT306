@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore } from 'redux';
-import ImageUploader from 'react-image-uploader';
+
 
 var defaultState = {
   product: {
@@ -10,10 +10,9 @@ var defaultState = {
 };
 
 
-function addProduct(picture, name, description, price, category, quantity) {
+function addProduct(name, description, price, category, quantity) {
  return {
    type: 'ADD_PRODUCT',
-   picture: picture,
    name: name,
    description: description,
    price: price,
@@ -42,7 +41,6 @@ function productApp(state, action) {
     case 'ADD_PRODUCT':
       var newState = Object.assign({}, state);
       newState.product.items.push({
-        picture: action.picture,
         name: action.name,
         description: action.description,
         price: action.price,
@@ -91,14 +89,12 @@ class AddProductForm extends React.Component {
   constructor(props) { //class constructor to assign the initial this.state
     super(props);//call the base constructor with props
     this.state = {
-      picture: [],
       name: '',
       description: '',
       price: '',
       category: '',
       quantity: ''
     };
-    this.onDrop = this.onDrop.bind(this);
     this.onNameChanged=this.onNameChanged.bind(this);
     this.onDescriptionChanged=this.onDescriptionChanged.bind(this);
     this.onPriceChanged=this.onPriceChanged.bind(this);
@@ -109,20 +105,12 @@ class AddProductForm extends React.Component {
 
   onFormSubmit(e) {
     e.preventDefault();
-    store.dispatch(addProduct(this.state.picture, this.state.name, this.state.description, this.state.price, this.state.category, this.state.quantity));
-    this.setState({ picture: []});
+    store.dispatch(addProduct(this.state.name, this.state.description, this.state.price, this.state.category, this.state.quantity));
     this.setState({ name: '' });
     this.setState({ description: '' });
     this.setState({ price: ''});
     this.setState({ category: ''});
     this.setState({ quantity: ''});
-  }
-
-  onDrop(picture) {
-    console.log(picture);
-    this.setState({
-      picture: this.state.picture.concat(picture),
-    });
   }
 
   onNameChanged(e) {
@@ -147,10 +135,7 @@ class AddProductForm extends React.Component {
 
   render() {
     return (
-
       <form onSubmit={this.onFormSubmit}>
-        <ImageUploader onUpload={this.onDrop}/>
-
         <input type="text" id ="textbox" placeholder="Name"
                onChange={this.onNameChanged}
                value={this.state.name} />
@@ -160,7 +145,7 @@ class AddProductForm extends React.Component {
               value={this.state.description} />
 
 
-        <input type="float" id ="textbox" placeholder="Price"
+        <input type="number" id ="textbox" placeholder="Price"
               onChange={this.onPriceChanged}
               value={this.state.price} />
 
@@ -183,23 +168,21 @@ class ProductItem extends React.Component {
     store.dispatch(deleteProduct(this.props.index));
   }
 
-  onCompletedClick() {
-    store.dispatch(completeProduct(this.props.index));
-  }
-
   render() {
-    var product = [console.log(picture),
-                  this.props.name,
-                  this.props.description,
-                  this.props.price,
-                  this.props.category,
-                  this.props.quantity,
-                  <a href="#" onClick={this.onDeleteClick.bind(this)}
-                     style={{textDecoration: 'none'}}>
-                   [X]
-                  </a>];
     return (
-         <ol> {product} </ol>
+      <li>
+         <div>{this.props.name}</div>
+         <div>{this.props.description}</div>
+         <div>{this.props.price}</div>
+         <div>{this.props.category}</div>
+         <div>{this.props.quantity}</div>
+
+        <a href="#" onClick={this.onDeleteClick.bind(this)}
+           style={{textDecoration: 'none'}}>
+         [Delete Product]
+        </a>
+
+      </li>
 
 
     );
@@ -230,7 +213,6 @@ class ProductList extends React.Component {
       items.push(<ProductItem
         key={index}
         index={index}
-        picture={item.picture}
         name={item.name}
         description={item.description}
         price={item.price}
@@ -242,7 +224,7 @@ class ProductList extends React.Component {
     if (!items.length) {
       return (
         <p>
-          <i>Please add something to do.</i>
+          <i>Please add a Product.</i>
         </p>
       );
     }
