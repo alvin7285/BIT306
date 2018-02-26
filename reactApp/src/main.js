@@ -92,7 +92,7 @@ class AddProductForm extends React.Component {
       name: '',
       description: '',
       price: '',
-      category: '',
+      category: 'food',
       quantity: ''
     };
     this.onNameChanged=this.onNameChanged.bind(this);
@@ -109,7 +109,7 @@ class AddProductForm extends React.Component {
     this.setState({ name: '' });
     this.setState({ description: '' });
     this.setState({ price: ''});
-    this.setState({ category: ''});
+    this.setState({ category: 'food'});
     this.setState({ quantity: ''});
   }
 
@@ -149,9 +149,11 @@ class AddProductForm extends React.Component {
               onChange={this.onPriceChanged}
               value={this.state.price} />
 
-        <input type="text" id ="textbox" placeholder="Category"
-              onChange={this.onCategoryChanged}
-              value={this.state.category} />
+        <select value={this.state.category} onChange={this.onCategoryChanged}>
+            <option value="food">Food</option>
+            <option value="handcraft item">Handcraft Item</option>
+            <option value="homemade item">Homemade Item</option>
+        </select>
 
         <input type="number" id ="textbox" placeholder="Quantity"
               onChange={this.onQuantityChanged}
@@ -174,7 +176,7 @@ class ProductItem extends React.Component {
          <div>{this.props.name}</div>
          <div>{this.props.description}</div>
          <div>{this.props.price}</div>
-         <div>{this.props.category}</div>
+         <div style={{}}>{this.props.category.toUpperCase()}</div>
          <div>{this.props.quantity}</div>
 
         <a href="#" onClick={this.onDeleteClick.bind(this)}
