@@ -17,7 +17,7 @@ input[type=submit] {
 
 #delete{
   padding:5px 15px;
-  background:#DC143C;
+  background:#ff4d4d;
   border:0 none;
   cursor:pointer;
   -webkit-border-radius: 5px;
@@ -29,11 +29,14 @@ a.deleteProduct:link, a.deleteProduct:visited {
     color: black;
     width:45%;
     padding: 2px 2px 2px 2px;
+    color: white;
     text-align: center;
     text-decoration: none;
     margin-right: -20px;
     margin-top: 5px;
     margin-bottom: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
     /* display: inline-block; */
 }
 
