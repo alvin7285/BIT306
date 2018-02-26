@@ -21,6 +21,7 @@ function addProduct(name, description, price, category, quantity) {
    completed: false
  };
 }
+function editProduct()
 
 function deleteProduct(index) {
   return {
