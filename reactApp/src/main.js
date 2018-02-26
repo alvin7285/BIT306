@@ -79,7 +79,7 @@ class ClearButton extends React.Component{                      //INVOKE THE CLE
 
   render(){
     return(
-      <button onClick={this.clearProduct.bind(this)}>CLEAR LIST</button>
+      <button id="delete" onClick={this.clearProduct.bind(this)}>CLEAR LIST</button>
     );
   }
 }
@@ -92,7 +92,7 @@ class AddProductForm extends React.Component {
       name: '',
       description: '',
       price: '',
-      category: 'food',
+      category: '',
       quantity: ''
     };
     this.onNameChanged=this.onNameChanged.bind(this);
@@ -109,7 +109,7 @@ class AddProductForm extends React.Component {
     this.setState({ name: '' });
     this.setState({ description: '' });
     this.setState({ price: ''});
-    this.setState({ category: 'food'});
+    this.setState({ category: ''});
     this.setState({ quantity: ''});
   }
 
@@ -149,11 +149,9 @@ class AddProductForm extends React.Component {
               onChange={this.onPriceChanged}
               value={this.state.price} />
 
-        <select value={this.state.category} onChange={this.onCategoryChanged}>
-            <option value="food">Food</option>
-            <option value="handcraft item">Handcraft Item</option>
-            <option value="homemade item">Homemade Item</option>
-        </select>
+        <input type="text" id ="textbox" placeholder="Category"
+              onChange={this.onCategoryChanged}
+              value={this.state.category} />
 
         <input type="number" id ="textbox" placeholder="Quantity"
               onChange={this.onQuantityChanged}
@@ -172,20 +170,22 @@ class ProductItem extends React.Component {
 
   render() {
     return (
-      <li>
-         <div>{this.props.name}</div>
-         <div>{this.props.description}</div>
-         <div>{this.props.price}</div>
-         <div style={{}}>{this.props.category.toUpperCase()}</div>
-         <div>{this.props.quantity}</div>
 
-        <a href="#" onClick={this.onDeleteClick.bind(this)}
-           style={{textDecoration: 'none'}}>
-         [Delete Product]
-        </a>
+      // <div class="flex-bigContainer">
+        <li class="flex-container">
+           <div class="flex-item">Name: {this.props.name}<br /></div>
+           <div class="flex-item">Description: {this.props.description}</div>
+           <div class="flex-item">Price: RM{this.props.price}</div>
+           <div class="flex-item">Category: {this.props.category}</div>
+           <div class="flex-item">Quantity: {this.props.quantity}</div>
 
-      </li>
+          <a href="#" onClick={this.onDeleteClick.bind(this)}
+             class="deleteProduct"style={{textDecoration: 'none'}}>
+           [Delete Product]
+          </a>
 
+        </li>
+      // </div>
 
     );
   }
@@ -232,7 +232,7 @@ class ProductList extends React.Component {
     }
 
     return (
-      <ol>{ items }</ol>
+      <ol class="flex-bigContainer">{ items }</ol>
     );
   }
 }
