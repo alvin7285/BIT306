@@ -149,9 +149,9 @@ class AddProductForm extends React.Component {
               value={this.state.price} />
 
         <select value={this.state.category} onChange={this.onCategoryChanged}>
-            <option value="food">Food</option>
-            <option value="handcraft item">Handcraft Item</option>
-            <option value="homemade item">Homemade Item</option>
+            <option value="Food">Food</option>
+            <option value="Handcraft Item">Handcraft Item</option>
+            <option value="Homemade Item">Homemade Item</option>
         </select>
 
         <input type="number" id ="textbox" placeholder="Quantity"
