@@ -36,12 +36,12 @@ a.deleteProduct:link, a.deleteProduct:visited {
     color: white;
     text-align: center;
     text-decoration: none;
-    margin-right: -20px;
+    margin-right: -10%;
     margin-top: 5px;
     margin-bottom: 5px;
+    margin-left: 25%;
     -webkit-border-radius: 5px;
     border-radius: 5px;
-    /* display: inline-block; */
 }
 
 a:hover, a:active {
@@ -50,48 +50,34 @@ a:hover, a:active {
 
 .flex-bigContainer{
     display:flex;
-    /* width: 45%; */
-    /* height: 100px; */
-    /* background-color: #f0f0f5; /*Changes the color of the container*/
-    /* flex-wrap: wrap;
-    flex-direction: row; */
     flex-flow: row wrap;
-    /* border: 1px solid black; */
-    /* width:30%; */
     justify-content: flex-start;
     align-content: flex-start;
+    margin-left: -40px;
 
 }
 
 .flex-container{
     display:flex;
-    width: 25%;
-    /* height: 100px; */
+    width: 15%;
     background-color: #f0f0f5; /*Changes the color of the container*/
     flex-wrap: wrap;
     flex-direction: column;
     border: 1px solid black;
-    /* width:30%; */
     justify-content: flex-start;
     align-content: flex-start;
     margin: 5px 5px 5px 5px;
-    padding-left: 5px;
+    padding: 5px 5px 5px 5px;
 }
 
 .flex-item{
-  /* background-color: tomato; */
-  /* padding: 5px; */
-  /* width: 10%;
-  height: 10%; */
-  /* margin-top: 10px; */
-  /* margin: 10px; */
-  /* line-height: 15px; */
   color: black;
-  /* font-weight: bold; */
   font-size: 16px;
-  /* text-align: center; */
   display:inline-block;
   flex-wrap: wrap;
-  /* flex-grow: 1; */
-  /* flex-shrink: 1; */
+}
+
+[role=image]{
+  max-width: 100px;
+  max-height: 100px;
 }

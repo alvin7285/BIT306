@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore } from 'redux';
 import styles from './main.css';
+import PropTypes from 'prop-types';
+import ImageUploader from 'react-image-uploader';
 
 var defaultState = {
   product: {
@@ -10,9 +12,10 @@ var defaultState = {
 };
 
 
-function addProduct(name, description, price, category, quantity) {
+function addProduct(image, name, description, price, category, quantity) {
  return {
    type: 'ADD_PRODUCT',
+   image: image,
    name: name,
    description: description,
    price: price,
@@ -40,6 +43,7 @@ function productApp(state, action) {
     case 'ADD_PRODUCT':
       var newState = Object.assign({}, state);
       newState.product.items.push({
+        image: action.image,
         name: action.name,
         description: action.description,
         price: action.price,
@@ -83,17 +87,45 @@ class ClearButton extends React.Component{                      //INVOKE THE CLE
   }
 }
 
+class ImageUpload extends React.Component {
+
+    constructor(props) {
+        super(props);
+         this.state = { pictures: [] };
+         this.onDrop = this.onDrop.bind(this);
+    }
+
+    onDrop(picture) {
+      console.log(picture);
+        this.setState({
+            pictures: this.state.pictures,
+        });
+
+    }
+
+    render() {
+        return (
+            <ImageUploader
+
+            />
+        );
+    }
+}
+
+
 class AddProductForm extends React.Component {
 
   constructor(props) { //class constructor to assign the initial this.state
     super(props);//call the base constructor with props
     this.state = {
+      image: [],
       name: '',
       description: '',
       price: '',
       category: 'Food',
       quantity: ''
     };
+    this.onImageChanged=this.onImageChanged.bind(this);
     this.onNameChanged=this.onNameChanged.bind(this);
     this.onDescriptionChanged=this.onDescriptionChanged.bind(this);
     this.onPriceChanged=this.onPriceChanged.bind(this);
@@ -104,12 +136,17 @@ class AddProductForm extends React.Component {
 
   onFormSubmit(e) {
     e.preventDefault();
-    store.dispatch(addProduct(this.state.name, this.state.description, this.state.price, this.state.category, this.state.quantity));
+    store.dispatch(addProduct(this.state.image,this.state.name, this.state.description, this.state.price, this.state.category, this.state.quantity));
+    this.setState({ image: []});
     this.setState({ name: '' });
     this.setState({ description: '' });
     this.setState({ price: ''});
     this.setState({ category: 'food'});
     this.setState({ quantity: ''});
+  }
+
+  onImageChanged(e){
+    this.setState({ image: e.target.value});
   }
 
   onNameChanged(e) {
@@ -172,7 +209,8 @@ class ProductItem extends React.Component {
   render() {
     return (
       <li class="flex-container">
-         <div class="flex-item">Name: {this.props.name}<br /></div>
+         <div class="img"><ImageUpload /></div>
+         <div class="flex-item">Name: {this.props.name}</div>
          <div class="flex-item">Description: {this.props.description}</div>
          <div class="flex-item">Price: RM{this.props.price}</div>
          <div class="flex-item">Category: {this.props.category}</div>
@@ -180,7 +218,7 @@ class ProductItem extends React.Component {
 
         <a href="#" onClick={this.onDeleteClick.bind(this)}
            class="deleteProduct"style={{textDecoration: 'none'}}>
-         [Delete Product]
+         Delete Product
         </a>
 
       </li>
@@ -214,6 +252,7 @@ class ProductList extends React.Component {
       items.push(<ProductItem
         key={index}
         index={index}
+        image={item.image}
         name={item.name}
         description={item.description}
         price={item.price}
@@ -238,7 +277,7 @@ class ProductList extends React.Component {
 
 ReactDOM.render(
   <div>
-    <h1>Product</h1>
+    <h1>Products</h1>
     <AddProductForm />
     <ProductList />
     <ClearButton />
