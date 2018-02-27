@@ -27,7 +27,15 @@ function addProduct(image, name, description, price, category, quantity) {
 function deleteProduct(index) {
   return {
     type: 'DELETE_PRODUCT',
-    index: index
+    index: index,
+  };
+}
+
+function sortingProduct(index,filterCategory){
+  return{
+    type: 'SORTING_PRODUCT',
+    index: index,
+    filterCategory:filterCategory
   };
 }
 
@@ -61,6 +69,19 @@ function productApp(state, action) {
         }
       });
 
+      case 'SORTING_PRODUCT':
+        var newState = Object.assign({}, state);
+          if(newState.product.items[action.index].category = filterCategory){
+            return Object.assign({}, state, {
+              product: {
+                items: items
+              }
+            });
+          }
+
+
+        return newState;
+
       case 'CLEAR_PRODUCT':                                        //REDUCER THAT ACCEPTS THE CLEAR ACTION
         return Object.assign({}, state,{
           product:{
@@ -75,6 +96,100 @@ function productApp(state, action) {
 
 var store = createStore(productApp, defaultState);
 
+class SortingProduct extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      filterCategory: 'Food',
+    };
+
+    this.handleFilterCategory = this.handleFilterCategory.bind(this);
+    this.onSortingFormSubmit = this.onSortingFormSubmit.bind(this);
+  }
+
+  handleFilterCategory(e) {
+    this.setState({ filterCategory: e.target.value });
+  }
+
+  categoryFilter(filterCategory){
+    this.setState({ filterCategory: filterCategory});
+  }
+
+
+  onSortingFormSubmit(e){
+    e.preventDefault();
+    store.dispatch(sortingProduct(this.props.index, this.props.filterCategory));
+    this.setState({filterCategory: 'Food'});
+  }
+
+
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.state.onSortingFormSubmit}>
+          <select id ="textbox" value={this.state.filterCategory}
+            onChange={this.handleFilterCategory}
+            filterCategory = {this.state.categoryFilter}>
+            <option value="Food">Food</option>
+            <option value="Handcraft Item">Handcraft Item</option>
+            <option value="Homemade Item">Homemade Item</option>
+          </select>
+          <input type="submit" value="Sort" />
+        </form>
+
+        <FilterProductList
+          products={this.props.product}
+          filterCategory={this.state.filterCategory}
+        />
+      </div>
+    );
+  }
+}
+
+class FilterProductList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: []
+    };
+  }
+
+  componentWillMount() {
+    store.subscribe(() => {
+      var state = store.getState();
+      this.setState({
+        items: state.product.items
+      });
+    });
+  }
+
+  render() {
+    const filterCategory = this.props.filterCategory;
+
+    var items = [];
+
+    this.state.items.forEach((item, index) => {
+      if (item.name.indexOf(filterCategory) === 2) {
+        item.push(<ProductItem
+          items={items}
+          key={index}
+          index={index}
+          name={item.name}
+          description={item.description}
+          price={item.price}
+          category={item.category}
+          quantity={item.quantity}
+        />);
+      }
+
+    });
+
+    return (
+      <ol class= "flex-bigContainer">{ items }</ol>
+    );
+  }
+}
+
 class ClearButton extends React.Component{                      //INVOKE THE CLEAR METHOD AND RENDER THE CLEAR BUTTON
   clearProduct(){
     store.dispatch(clearProduct());
@@ -82,7 +197,7 @@ class ClearButton extends React.Component{                      //INVOKE THE CLE
 
   render(){
     return(
-      <button id="delete" onClick={this.clearProduct.bind(this)}>CLEAR LIST</button>
+      <button id = "delete"onClick={this.clearProduct.bind(this)}>CLEAR LIST</button>
     );
   }
 }
@@ -209,6 +324,7 @@ class ProductItem extends React.Component {
   render() {
     return (
       <li class="flex-container">
+
          <div class="img"><ImageUpload /></div>
          <div class="flex-item">Name: {this.props.name}</div>
          <div class="flex-item">Description: {this.props.description}</div>
@@ -227,6 +343,7 @@ class ProductItem extends React.Component {
     );
   }
 }
+
 
 class ProductList extends React.Component {
   constructor(props) {
@@ -270,7 +387,7 @@ class ProductList extends React.Component {
     }
 
     return (
-      <ol class="flex-bigContainer">{ items }</ol>
+      <ol class= "flex-bigContainer">{ items }</ol>
     );
   }
 }
@@ -279,6 +396,7 @@ ReactDOM.render(
   <div>
     <h1>Products</h1>
     <AddProductForm />
+    <SortingProduct />
     <ProductList />
     <ClearButton />
   </div>,
